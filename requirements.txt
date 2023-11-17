@@ -1,0 +1,17 @@
+numpy
+scipy
+gdown
+zipfile36
+albumentations
+matplotlib
+datetime
+tensorflow==2.9.1
+keras==2.9.0
+keras-applications
+segmentation-models==1.0.1
+h5py==2.10.0
+wandb
+fast-ml
+seaborn
+pytz
+tf-clahe

@@ -1,0 +1,72 @@
+---
+job_type: "prediction" 
+organ: "Spleen"  # Spleen, KidneyR, Pancreas
+view: "Both"  # Right, Both, Left
+use_wandb: False  # True if you want to use weights and biases
+
+data:
+  # ovdje podrazumjevamo da ce slike biti u direktoriju Images, a maske
+  # u direktoriju Masks{organ}. Nisam zicer je li to ok, ali je svakako urednije
+  paths:
+    - "./data/raw/dataset_rk/"
+    #- "./data/raw/dataset_rk_3/"
+  specify_image_range:  
+    using: True
+    # ako zelimo napraviti evaluaciju samo na nekim slikama
+    # mapira se po redu prema paths i u listi ide po redu od kud do kud
+    ranges:
+      - [[1200, 1300]]
+      #- [[500, 700], [1600, 3060]]
+  images_per_patient: 600
+
+trained_model:
+  name: "retrain_Spleen_04-02-2023__00-23-32"
+  path: "./models/"
+
+precision_recall_curve:
+  calculate: True
+  plot: True
+  threshold_start: 0.5
+
+patient_distribution_from_training:
+  path: "./patients_distribution/"
+
+score_threshold: 0.5
+
+organ_merging:
+  using_organ_merging: False
+  number_of_merged_organs: 1
+
+save_path: "./plots/"
+
+segmentation_model:
+  compile: True
+  batch_size: 1
+  epochs: 100
+  backbone: "efficientnetb3"
+  activation: "sigmoid"
+  number_of_classes: 1
+  encoder_weights: "imagenet"
+  encoder_freeze: True
+  checkpoint_path: "./tensorflow_models/"
+  scheduler:
+    exponential:
+      using: True
+      initial_learning_rate: 0.001
+      decay_steps: 50
+      decay_rate: 0.8
+    cosine:
+      using: False
+      initial_learning_rate: 0.001
+      first_decay_steps: 40
+      t_mul: 1.2
+      m_mul: 1.0
+      alpha: 0
+  callbacks:
+    early_stopping:
+      early_stopping_monitor: "val_loss"
+      early_stopping_mode: "auto"
+      early_stopping_patience: 10
+      early_stopping_restore_best: True
+      early_stopping_min_delta: 0
+      early_stopping_baseline: null

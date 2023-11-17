@@ -1,0 +1,80 @@
+---
+job_type: "retrain"
+organ: "Liver"  # Spleen, KidneyR, Pancreas
+view: "Both"  # View_1, Both, View_2
+use_wandb: True  # True if you want to use weights and biases
+
+data:
+  # ovdje podrazumjevamo da ce slike biti u direktoriju Images, a maske
+  # u direktoriju Masks{organ}. Nisam zicer je li to ok, ali je svakako urednije
+  paths:
+    #- "./data/corr_view/abd_corr_view/"
+    - "./data/corr_view/rk_corr_view/"
+    #- "./data/artefacts/abd_artefacts/"
+    - "./data/artefacts/rk_artefacts/"
+  train_validation_test_split_ratio:
+    # - [seed, train, validation, test]
+    #- [0, 1.0, 0.0, 0.0]
+    - [0, 0.6, 0.2, 0.2]
+    #- [0, 0.3, 0.4, 0.3]
+    - [0, 0.5, 0.3, 0.2]
+  dirty_data:
+    remove_dirty_data: True
+    paths:
+      #- ['./dirty_data/abd_corr_view_white_80.csv', './dirty_data/abd_corr_view_foggy_95.csv']
+      - ['./dirty_data/rk_corr_view_white_90.csv', './dirty_data/rk_corr_view_foggy_95.csv']
+      #- ['./dirty_data/abd_artefacts_white_80.csv', './dirty_data/abd_artefacts_foggy_95.csv']
+      - ['./dirty_data/rk_artefacts_white_90.csv', './dirty_data/rk_artefacts_foggy_95.csv']
+  images_per_patient: 600
+  augmentation: False
+
+trained_model:
+  name: "train_Liver_02-04-2023__20-05-56"
+  path: "./models/"
+
+patient_distribution_from_training: 
+  using: True
+  path: "./patients_distribution/"
+
+organ_merging:
+  using_organ_merging: False
+  number_of_merged_organs: 1
+
+save_paths:
+  time_and_date_format: "%d-%m-%Y__%H-%M-%S"
+  model: "./models/"
+  patients: "./patients/"
+  save_weights: False
+
+segmentation_model:
+  compile: True
+  batch_size: 64
+  epochs: 100
+  backbone: "efficientnetb0"
+  loss: "Jaccard" # "Dice" # "Focal"
+  activation: "sigmoid"
+  number_of_classes: 1
+  encoder_weights: "imagenet"
+  encoder_freeze: True
+  checkpoint_path: "./tensorflow_models/"
+  scheduler:
+    exponential:
+      using: True
+      initial_learning_rate: 0.0001
+      decay_steps: 50
+      decay_rate: 0.9
+    cosine:
+      using: False
+      initial_learning_rate: 0.0005
+      first_decay_steps: 40
+      t_mul: 1.2
+      m_mul: 1.0
+      alpha: 0
+  callbacks:
+    early_stopping:
+      early_stopping_monitor: "val_loss"
+      early_stopping_mode: "auto"
+      early_stopping_patience: 15
+      early_stopping_restore_best: True
+      early_stopping_min_delta: 0
+      early_stopping_baseline: null

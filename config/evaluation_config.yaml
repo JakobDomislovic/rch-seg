@@ -1,0 +1,80 @@
+---
+job_type: "evaluation"
+organ: "Liver"  # Spleen, KidneyR, Pancreas
+view: "Both"  # Right, Both, Left
+use_wandb: True  # True if you want to use weights and biases
+
+data:
+  # ovdje podrazumjevamo da ce slike biti u direktoriju Images, a maske
+  # u direktoriju Masks{organ}. Nisam zicer je li to ok, ali je svakako urednije
+  paths:
+    - "./data/artefacts/abd_artefacts_skare/"
+    - "./data/artefacts/rk_artefacts_skare/"
+  dirty_data:
+    remove_dirty_data: False
+    paths:
+      - ['./dirty_data/abd_artefacts_skare_white_80.csv', './dirty_data/abd_artefacts_skare_foggy_95.csv']
+      - ['./dirty_data/rk_artefacts_skare_white_90.csv', './dirty_data/rk_artefacts_skare_foggy_95.csv']
+  specify_image_range:  
+    using: False
+    # ako zelimo napraviti evaluaciju samo na nekim slikama
+    # mapira se po redu prema paths i u listi ide po redu od kud do kud
+    ranges:
+      - [[1200, 1300], [1600, 3060]]
+  images_per_patient: 600
+
+trained_model:
+  name: "train_Liver_07-03-2023__20-37-53"
+  path: "./models/"
+
+patient_distribution_from_training: 
+  using: True
+  path: "./patients_distribution/"
+
+score_threshold: 0.5
+
+organ_merging:
+  using_organ_merging: False
+  number_of_merged_organs: 1
+
+export_score:
+  using: False
+  threshold: null  # exportat sve koji imaju score ispod threshold. Ako je null onda exportat sve.
+  path: null
+
+save_paths:
+  time_and_date_format: "%d-%m-%Y__%H-%M-%S"
+
+segmentation_model:
+  compile: True
+  batch_size: 64
+  epochs: 100
+  backbone: "efficientnetb0"
+  loss: "Jaccard" # "Dice" # "Focal"
+  activation: "sigmoid"
+  number_of_classes: 1
+  encoder_weights: "imagenet"
+  encoder_freeze: True
+  checkpoint_path: "./tensorflow_models/"
+  scheduler:
+    exponential:
+      using: True
+      initial_learning_rate: 0.001
+      decay_steps: 40
+      decay_rate: 0.8
+    cosine:
+      using: False
+      initial_learning_rate: 0.0005
+      first_decay_steps: 40
+      t_mul: 1.2
+      m_mul: 1.0
+      alpha: 0
+  callbacks:
+    early_stopping:
+      early_stopping_monitor: "val_loss"
+      early_stopping_mode: "auto"
+      early_stopping_patience: 10
+      early_stopping_restore_best: True
+      early_stopping_min_delta: 0
+      early_stopping_baseline: null
+

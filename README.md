@@ -1,1 +1,7 @@
-# rch-seg
+# RCH-SEG
+
+## Docker
+
+## Train model
+
+## TODO
