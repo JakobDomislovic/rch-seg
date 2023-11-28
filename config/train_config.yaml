@@ -1,22 +1,18 @@
 ---
 job_type: "train"
 organ: "Liver"  # Spleen, KidneyR, Pancreas
-view: "Both"  # View_1, Both, View_2
-use_wandb: True  # True if you want to use weights and biases
+view: "View_1"  # View_1, Both, View_2
+use_wandb: False  # True if you want to use weights and biases
 
 data:
   # ovdje podrazumjevamo da ce slike biti u direktoriju Images, a maske
   # u direktoriju Masks{organ}. Nisam zicer je li to ok, ali je svakako urednije
   paths:
-    - "./data/clean/abd/"
-    - "./data/clean/rk/"
-    #- "./data/corr_view/abd_corr_view/"
-    #- "./data/corr_view/rk_corr_view/"
-    #- "./data/artefacts/abd_artefacts/"
-    #- "./data/artefacts/rk_artefacts/"
+    #- "./data/abd/"
+    - "./data/rch/"
   train_validation_test_split_ratio:
     # - [seed, train, validation, test]
-    - [0, 1.0, 0.0, 0.0]
+    #- [0, 1.0, 0.0, 0.0]
     - [0, 0.4, 0.3, 0.3]
     #- [0, 0.3, 0.4, 0.3]
     #- [0, 0.3, 0.4, 0.3]
@@ -47,9 +43,9 @@ save_paths:
 segmentation_model:
   compile: True
   batch_size: 64
-  epochs: 500
+  epochs: 2
   backbone: "efficientnetb0"
-  loss: "log_cosh_jaccard"
+  loss: "Jaccard"
   activation: "sigmoid"
   number_of_classes: 1
   encoder_weights: "imagenet"
