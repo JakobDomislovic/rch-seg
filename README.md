@@ -25,6 +25,8 @@ Next step is to run docker image. When running docker image the cloned repositor
 
 ## Train model
 
+First step should be to put data into ```./data/``` direcotry. This will be mounted to docker container and wont be pushed to github.
+
 Before neural network training, you should set up config ```config/train_config.yaml```  in which you can choose which data to train, view (both, view A or view b) will you use wandb (weights & biases), images per patients (600 if view==both and 300 if view=view A or view B), loss function and many more. For any question please contact me on jakob.domislovic@fer.hr. 
 
 Training is started with ```python3 train.py```.
