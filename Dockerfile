@@ -5,7 +5,8 @@ RUN apt-get update && apt-get install -y \
     zip \ 
     unzip \
     git \
-    nano
+    nano \
+    vim
 
 # Upgrade PIP
 RUN pip3 install --upgrade pip
