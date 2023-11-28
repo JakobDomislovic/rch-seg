@@ -1,5 +1,7 @@
 # system imports
 import os
+os.environ["SM_FRAMEWORK"] = "tf.keras"
+
 # self imports
 from loaders.config_loader import ConfigLoader
 from loaders.data_loader import DataLoader

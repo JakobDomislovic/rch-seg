@@ -36,6 +36,7 @@ docker run \
   $gpu_enabled \
   --volume=$XSOCK:$XSOCK:rw \
   --volume=$XAUTH:$XAUTH:rw \
+  --volume= $(pwd):/rch-seg \
   --env="XAUTHORITY=${XAUTH}" \
   --env DISPLAY=$DISPLAY \
   --env TERM=xterm-256color \
