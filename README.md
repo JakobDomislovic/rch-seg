@@ -32,6 +32,6 @@ Before neural network training, you should set up config ```config/train_config.
 Training is started with ```python3 train.py```.
 
 ### TODO
-- Upute za spajanje organa.
-- Dodati support za smanjivanje slike na 96x96.
-- Dodati support za augmentacije.
+- Add support to organ merging.
+- Add support to resize images to 96x96.
+- Add albumentations support.
