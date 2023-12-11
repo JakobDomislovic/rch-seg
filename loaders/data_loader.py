@@ -26,7 +26,6 @@ class DataLoader:
         img = tf.io.read_file(image)
         img = tf.image.decode_png(contents=img, channels=3)
         # CLAHE
-        # img = tf_clahe.clahe(img, tile_grid_size=(8, 8), clip_limit=4.0)
         img = tf.cast(x=img, dtype=tf.float32)
         if self.config.using_organ_merging:
             img = img[:, :, 0:(1+self.config.number_of_merged_organs)]
@@ -34,8 +33,10 @@ class DataLoader:
         mask = tf.io.read_file(mask)
         mask = tf.image.decode_png(contents=mask, channels=1)
         # CLAHE
-        # mask = tf_clahe.clahe(mask, tile_grid_size=(8, 8), clip_limit=4.0)
         mask = tf.cast(x=mask, dtype=tf.float32)
+
+        img = tf.image.random_crop(value=img, size=(96, 96, 3), seed=1)
+        mask = tf.image.random_crop(value=mask, size=(96, 96, 1), seed=1)
         return img, mask
 
     def dataset_pipeline(self, images, masks, batch_size=1, num_classes=1, size=(224,224)):

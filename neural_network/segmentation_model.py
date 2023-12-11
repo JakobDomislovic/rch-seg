@@ -63,11 +63,11 @@ class SegmentationModel:
             encoder_freeze=self.config.encoder_freeze,
         )
         if self.config.using_organ_merging:
-            input = Input(shape=(224, 224, 1+self.config.number_of_merged_organs), name='MergedInput')
+            input = Input(shape=(96, 96, 1+self.config.number_of_merged_organs), name='MergedInput')
             convolution_layer = SeparableConv2D(3, (1, 1), name='SeparableConv2D')(input) # map N channels to 3 channels
             preprocessed = preprocess_input(convolution_layer)
         else:
-            input = Input(shape=(224, 224, 3), name='Input')
+            input = Input(shape=(96, 96, 3), name='Input')
             preprocessed = preprocess_input(input)
         output = base_model(preprocessed)
         # final model
